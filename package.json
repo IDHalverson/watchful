@@ -37,5 +37,8 @@
   "homepage": "https://qwik.builder.io/",
   "license": "",
   "private": true,
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "css-resetter": "^1.2.3"
+  }
 }

@@ -1,8 +1,17 @@
-# Qwik watchful ⚡️
+# Watchful | Never miss out. Find the best videos.
 
-- Blank Qwik starter app.
+## Primary Tools
+- Qwik - Generated from Blank Qwik starter app.
 - Vite.js tooling.
 - Prettier code formatter.
+
+## Purpose
+
+A simple search interface to interact with YouTube's public API making it simple and easy to search and find the best videos.
+
+
+
+# How to use Qwik ⚡️
 
 ## Development Builds
 
