@@ -7,6 +7,7 @@ import {
 } from "@builder.io/qwik";
 import SearchButtonComponent from "../../common/search-button/search-button.component";
 import SearchInputComponent from "../../common/search-input/search-input.component";
+import SelectComponent from "../../common/select/select.component";
 import YoutubeListItemComponent from "../../common/youtube-list-item/youtube-list-item.component";
 import * as YoutubeApi from "../../services/youtube.service";
 import * as APP_CONSTANTS from "./app.constants";
@@ -39,7 +40,8 @@ export const App = component$(() => {
     track(executeSearchTimestamp, "timestamp");
     if (formValues.searchValue) {
       const youtubeResults = await YoutubeApi.searchYoutube(
-        formValues.searchValue
+        formValues.searchValue,
+        formValues.sortValue
       );
       console.log(youtubeResults);
       areYoutubeResultsLoading.isLoading = false;
@@ -69,6 +71,13 @@ export const App = component$(() => {
             },
           }}
         />
+        <SelectComponent
+          {...{
+            onChange$: (e: Event) => {
+              formValues.sortValue = (e?.target as HTMLSelectElement)?.value;
+            },
+          }}
+        />
         <SearchButtonComponent
           {...{
             onClick$: (e: Event) => {
@@ -86,7 +95,9 @@ export const App = component$(() => {
         {areYoutubeResultsLoading.isLoading
           ? "Searching..."
           : youtubeData.items.map((youtubeDataItem) => (
-              <YoutubeListItemComponent youtubeItem={youtubeDataItem} />
+              <YoutubeListItemComponent
+                youtubeItem={mutable(youtubeDataItem)}
+              />
             ))}
       </div>
     </div>

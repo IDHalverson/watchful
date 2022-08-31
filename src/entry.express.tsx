@@ -52,15 +52,37 @@ if (process.env.CORS_ENABLED === "yes")
  * Youtube API handler callable from client side
  */
 app.get("/youtube-search", async (req: Request, res: Response) => {
-  const youtubeData = await youtube.search.list({
-    part: ["snippet"],
-    q: req.params.q,
-  });
-  res.json({
-    data: {
-      content: youtubeData.data.items,
-    },
-  });
+  try {
+    const youtubeData = await youtube.search.list({
+      part: ["snippet"],
+      q: req.query.q as string,
+      order: req.query.order as string,
+      maxResults: 50,
+    });
+    res.json({
+      data: {
+        content: youtubeData.data.items,
+      },
+    });
+  } catch (e) {
+    res.send("An Error occured.");
+  }
+});
+app.get("/youtube-comments", async (req: Request, res: Response) => {
+  try {
+    const youtubeData = await youtube.commentThreads.list({
+      part: ["snippet"],
+      videoId: req.query.videoId as string,
+      maxResults: 100,
+    });
+    res.json({
+      data: {
+        content: youtubeData.data.items,
+      },
+    });
+  } catch (e) {
+    res.send("An Error occured.");
+  }
 });
 
 /**
