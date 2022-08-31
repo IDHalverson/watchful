@@ -70,6 +70,25 @@ app.get("/youtube-search", async (req: Request, res: Response) => {
 });
 app.get("/youtube-comments", async (req: Request, res: Response) => {
   try {
+    /**
+     * This throws a static code / typecheck error, but
+     * the code works. Need to troubleshoot. Modifying
+     * in post-build manually for now.
+     */
+    // const youtubeData = await youtube.videos.list({
+    //   part: ["statistics"],
+    //   id: req.query.videoId,
+    //   maxResults: 1,
+    // });
+    // res.json({
+    //   data: {
+    //     content: youtubeData.data.items,
+    //   },
+    // });
+
+    /**
+     * alternative method / limited to 100 comments
+     */
     const youtubeData = await youtube.commentThreads.list({
       part: ["snippet"],
       videoId: req.query.videoId as string,
@@ -77,7 +96,13 @@ app.get("/youtube-comments", async (req: Request, res: Response) => {
     });
     res.json({
       data: {
-        content: youtubeData.data.items,
+        content: [
+          {
+            statistics: {
+              commentCount: youtubeData.data.items?.length || undefined,
+            },
+          },
+        ],
       },
     });
   } catch (e) {

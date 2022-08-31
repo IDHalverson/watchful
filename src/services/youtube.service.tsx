@@ -26,5 +26,5 @@ export const getTotalComments = async (videoId: string) => {
     }
   );
   const responseAsJson = await response.json();
-  return responseAsJson?.data?.content?.length || 0;
+  return responseAsJson?.data?.content?.[0]?.statistics?.commentCount ?? null;
 };

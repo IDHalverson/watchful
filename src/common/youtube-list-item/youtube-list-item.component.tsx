@@ -21,13 +21,17 @@ export default component$(({ youtubeItem }: YoutubeListItemProps) => {
     value: undefined,
   } as TotalCommentCount);
   useMount$(async () => {
+    let unableToCount = false;
     try {
       const totalComments = await YoutubeApi.getTotalComments(videoId);
-      totalCommentCount.value = totalComments;
+      if (totalComments == null) unableToCount = true;
+      if (!unableToCount) totalCommentCount.value = totalComments;
     } catch (e) {
+      unableToCount = true;
+    }
+    if (unableToCount)
       totalCommentCount.value =
         "(Couldn't fetch total comments. They might be disabled.)";
-    }
   });
 
   return (
