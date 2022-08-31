@@ -1,7 +1,7 @@
-import { App } from './components/app/app';
+import { App } from "./features/app/app.component";
 
-import "css-resetter";
-import './global.css';
+import "./styles/colors.css";
+import "./styles/global.css";
 
 export default () => {
   return (

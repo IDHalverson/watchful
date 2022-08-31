@@ -1,0 +1,26 @@
+#app-outer-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: center;
+
+  .app-h1 {
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    font-style: italic;
+    font-size: 50px;
+    padding-top: 20px;
+  }
+
+  .app-h2 {
+    letter-spacing: 1px;
+    color: var(--watchful-blue);
+    font-size: 20px;
+  }
+
+  .search-fields-container {
+    display: flex;
+  }
+}

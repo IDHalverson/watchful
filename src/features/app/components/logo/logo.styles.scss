@@ -1,0 +1,33 @@
+#logo-container {
+  position: relative;
+
+  .logo-overlay {
+    position: absolute;
+    &.top {
+      width: 400px;
+      height: 10px;
+      top: -10px;
+      box-shadow: 0px 15px 20px 30px white;
+    }
+    &.right {
+      height: 250px;
+      width: 10px;
+      right: -10px;
+      top: 0px;
+      box-shadow: -15px 0px 20px 30px white;
+    }
+    &.bottom {
+      width: 400px;
+      height: 10px;
+      bottom: -10px;
+      box-shadow: 0px -15px 20px 30px white;
+    }
+    &.left {
+      height: 250px;
+      width: 10px;
+      left: -10px;
+      top: 0px;
+      box-shadow: 15px 0px 20px 30px white;
+    }
+  }
+}

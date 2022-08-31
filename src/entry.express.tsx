@@ -1,9 +1,19 @@
-import express from 'express';
-import { join } from 'path';
-import { fileURLToPath } from 'url';
-import render from './entry.ssr';
+import cors from "cors";
+import dotenv from "dotenv";
+import express, { Request, Response } from "express";
+import { google } from "googleapis";
+import { join } from "path";
+import { fileURLToPath, URL } from "url";
+import render from "./entry.ssr";
 
-const __dirname = fileURLToPath(new URL('.', import.meta.url));
+dotenv.config();
+
+const youtube = google.youtube({
+  version: "v3",
+  auth: process.env.YOUTUBE_V3_API_KEY,
+});
+
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 /**
  * Create an express server
@@ -16,22 +26,47 @@ const app = express();
  * hashed filenames, immutable cache-control
  */
 app.use(
-  '/build',
-  express.static(join(__dirname, '..', 'dist', 'build'), {
+  "/build",
+  express.static(join(__dirname, "..", "dist", "build"), {
     immutable: true,
-    maxAge: '1y',
+    maxAge: "1y",
   })
 );
 
 /**
  * Serve static public files at the root
  */
-app.use(express.static(join(__dirname, '..', 'dist'), { index: false }));
+app.use(express.static(join(__dirname, "..", "dist"), { index: false }));
+
+/**
+ * Handle CORS for development testing
+ */
+if (process.env.CORS_ENABLED === "yes")
+  app.use(
+    cors({
+      origin: "http://localhost:5173",
+    })
+  );
+
+/**
+ * Youtube API handler callable from client side
+ */
+app.get("/youtube-search", async (req: Request, res: Response) => {
+  const youtubeData = await youtube.search.list({
+    part: ["snippet"],
+    q: req.params.q,
+  });
+  res.json({
+    data: {
+      content: youtubeData.data.items,
+    },
+  });
+});
 
 /**
  * Server-Side Render Qwik application
  */
-app.get('/*', async (req, res, next) => {
+app.get("/home", async (req, res, next) => {
   try {
     // Render the Root component to a string
     const result = await render({
@@ -39,7 +74,7 @@ app.get('/*', async (req, res, next) => {
     });
 
     // respond with SSR'd HTML
-    if ('html' in result) {
+    if ("html" in result) {
       res.send((result as any).html);
     } else {
       res.end();
