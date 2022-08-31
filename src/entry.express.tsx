@@ -57,7 +57,7 @@ app.get("/youtube-search", async (req: Request, res: Response) => {
       part: ["snippet"],
       q: req.query.q as string,
       order: req.query.order as string,
-      maxResults: 50,
+      maxResults: 20,
     });
     res.json({
       data: {

@@ -7,9 +7,9 @@ export default component$(({ onChange$ }: SelectProps) => {
 
   return (
     <select class="select" onChange$={onChange$}>
+      <option class="select-option">Relevance</option>
       <option class="select-option">Date</option>
       <option class="select-option">Rating</option>
-      <option class="select-option">Relevance</option>
     </select>
   );
 });

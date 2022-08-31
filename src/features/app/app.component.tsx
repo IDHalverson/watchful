@@ -21,31 +21,47 @@ export const App = component$(() => {
     searchValue: "",
     sortValue: "",
   });
-  const executeSearchTimestamp = useStore({
-    timestamp: 0,
+  const lastExecutedFormValues = useStore({
+    searchValue: "",
+    sortValue: "",
+  });
+  const executeSearchTrigger = useStore({
+    trigger: 0,
+  });
+  const loadMoreTrigger = useStore({
+    trigger: 0,
   });
   const youtubeData = useStore({
     items: [],
+    nextPageToken: "",
   });
   const areYoutubeResultsLoading = useStore({
     isLoading: false,
   });
 
-  // useWatch$(({ track }) => {
-  //   track(formValues, "searchValue");
-  //   console.log(formValues.searchValue);
-  // });
-
   useClientEffect$(async ({ track }) => {
-    track(executeSearchTimestamp, "timestamp");
+    track(executeSearchTrigger, "trigger");
     if (formValues.searchValue) {
+      lastExecutedFormValues.searchValue = formValues.searchValue;
+      lastExecutedFormValues.sortValue = formValues.sortValue;
       const youtubeResults = await YoutubeApi.searchYoutube(
         formValues.searchValue,
         formValues.sortValue
       );
-      console.log(youtubeResults);
       areYoutubeResultsLoading.isLoading = false;
       youtubeData.items = youtubeResults;
+      youtubeData.nextPageToken = youtubeResults.nextPageToken;
+    }
+  });
+  useClientEffect$(async ({ track }) => {
+    track(loadMoreTrigger, "trigger");
+    if (lastExecutedFormValues.searchValue) {
+      const youtubeResults = await YoutubeApi.searchYoutube(
+        lastExecutedFormValues.searchValue,
+        lastExecutedFormValues.sortValue
+      );
+      const newItems = youtubeData.items.concat(youtubeResults);
+      youtubeData.items = newItems;
     }
   });
 
@@ -62,7 +78,7 @@ export const App = component$(() => {
                 if (formValues.searchValue) {
                   youtubeData.items = [];
                   areYoutubeResultsLoading.isLoading = true;
-                  executeSearchTimestamp.timestamp = Date.now();
+                  executeSearchTrigger.trigger = Date.now();
                 }
               } else {
                 formValues.searchValue =
@@ -84,7 +100,7 @@ export const App = component$(() => {
               if (formValues.searchValue) {
                 youtubeData.items = [];
                 areYoutubeResultsLoading.isLoading = true;
-                executeSearchTimestamp.timestamp = Date.now();
+                executeSearchTrigger.trigger = Date.now();
               }
             },
             disabled: mutable(!formValues.searchValue),
@@ -99,6 +115,13 @@ export const App = component$(() => {
                 youtubeItem={mutable(youtubeDataItem)}
               />
             ))}
+      </div>
+      <div
+        onClick$={() => {
+          loadMoreTrigger.trigger = Date.now();
+        }}
+      >
+        Load More
       </div>
     </div>
   );
