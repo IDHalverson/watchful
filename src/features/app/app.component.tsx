@@ -21,19 +21,11 @@ export const App = component$(() => {
     searchValue: "",
     sortValue: "",
   });
-  const lastExecutedFormValues = useStore({
-    searchValue: "",
-    sortValue: "",
-  });
   const executeSearchTrigger = useStore({
-    trigger: 0,
-  });
-  const loadMoreTrigger = useStore({
     trigger: 0,
   });
   const youtubeData = useStore({
     items: [],
-    nextPageToken: "",
   });
   const areYoutubeResultsLoading = useStore({
     isLoading: false,
@@ -42,26 +34,12 @@ export const App = component$(() => {
   useClientEffect$(async ({ track }) => {
     track(executeSearchTrigger, "trigger");
     if (formValues.searchValue) {
-      lastExecutedFormValues.searchValue = formValues.searchValue;
-      lastExecutedFormValues.sortValue = formValues.sortValue;
       const youtubeResults = await YoutubeApi.searchYoutube(
         formValues.searchValue,
         formValues.sortValue
       );
       areYoutubeResultsLoading.isLoading = false;
       youtubeData.items = youtubeResults;
-      youtubeData.nextPageToken = youtubeResults.nextPageToken;
-    }
-  });
-  useClientEffect$(async ({ track }) => {
-    track(loadMoreTrigger, "trigger");
-    if (lastExecutedFormValues.searchValue) {
-      const youtubeResults = await YoutubeApi.searchYoutube(
-        lastExecutedFormValues.searchValue,
-        lastExecutedFormValues.sortValue
-      );
-      const newItems = youtubeData.items.concat(youtubeResults);
-      youtubeData.items = newItems;
     }
   });
 
@@ -115,13 +93,6 @@ export const App = component$(() => {
                 youtubeItem={mutable(youtubeDataItem)}
               />
             ))}
-      </div>
-      <div
-        onClick$={() => {
-          loadMoreTrigger.trigger = Date.now();
-        }}
-      >
-        Load More
       </div>
     </div>
   );
