@@ -1,5 +1,8 @@
 # Watchful | Never miss out. Find the best videos.
 
+![Peek 2022-08-31 04-08](https://user-images.githubusercontent.com/27778472/187627052-4c5fb231-9e1f-45d4-a8cf-de4143e0426b.gif)
+
+
 ## Primary Tools
 - Qwik - Generated from Blank Qwik starter app.
 - Vite.js tooling.
